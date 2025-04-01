@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 using System.Text.Json;
 using Azure.Storage.Queues.Models;
 using Microsoft.Azure.Functions.Worker;
@@ -22,6 +23,8 @@ namespace TicketHubFunction
             _logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
 
             string json = message.MessageText;
+
+            //create options to ignore case when deserializing json
 
             var options = new JsonSerializerOptions
             {
@@ -51,12 +54,24 @@ namespace TicketHubFunction
             {
                 await conn.OpenAsync(); // Note the ASYNC
 
-                var query = "INSERT INTO dbo.SomeTable (Column1, Column2) VALUES (@value1, @value2)";
+                //TODO : insert the purchase into the actual correct table in the database
+
+                var query = "INSERT INTO TicketPurchase (Email, Name, Phone, Quantity, CreditCard, Expiry, SecurityCode, Address, City, Province, PostalCode, Country) VALUES (@Email, @Name, @Phone, @Quantity, @CreditCard, @Expiry, @SecurityCode, @Address, @City, @Province, @PostalCode, @Country);";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@value1", "hello");
-                    cmd.Parameters.AddWithValue("@value2", "value");
+                    cmd.Parameters.AddWithValue("@Email", purchase.Email);
+                    cmd.Parameters.AddWithValue("@Name", purchase.Name);
+                    cmd.Parameters.AddWithValue("@Phone", purchase.Phone);
+                    cmd.Parameters.AddWithValue("@Quantity", purchase.Quantity);
+                    cmd.Parameters.AddWithValue("@CreditCard", purchase.CreditCard); 
+                    cmd.Parameters.AddWithValue("@Expiry", purchase.Expiry);
+                    cmd.Parameters.AddWithValue("@SecurityCode", purchase.SecurityCode);
+                    cmd.Parameters.AddWithValue("@Address", purchase.Address);
+                    cmd.Parameters.AddWithValue("@City", purchase.City);
+                    cmd.Parameters.AddWithValue("@Province", purchase.Province);
+                    cmd.Parameters.AddWithValue("@PostalCode", purchase.PostalCode);
+                    cmd.Parameters.AddWithValue("@Country", purchase.Country);
 
                     await cmd.ExecuteNonQueryAsync();
                 }
