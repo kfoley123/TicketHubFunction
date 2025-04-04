@@ -57,11 +57,10 @@ namespace TicketHubFunction
                 //TODO : insert the purchase into the actual correct table in the database !!! 
                 //A new comment for GIT
 
-                var query = "INSERT INTO TicketPurchase (ConcertID, Email, Name, Phone, Quantity, CreditCard, Expiry, SecurityCode, Address, City, Province, PostalCode, Country) VALUES (@ConcertID, @Email, @Name, @Phone, @Quantity, @CreditCard, @Expiry, @SecurityCode, @Address, @City, @Province, @PostalCode, @Country);";
+                var query = "INSERT INTO TicketPurchase (, Email, Name, Phone, Quantity, CreditCard, Expiry, SecurityCode, Address, City, Province, PostalCode, Country) VALUES (@Email, @Name, @Phone, @Quantity, @CreditCard, @Expiry, @SecurityCode, @Address, @City, @Province, @PostalCode, @Country);";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@ConcertId", purchase.ConcertId);
                     cmd.Parameters.AddWithValue("@Email", purchase.Email);
                     cmd.Parameters.AddWithValue("@Name", purchase.Name);
                     cmd.Parameters.AddWithValue("@Phone", purchase.Phone);
